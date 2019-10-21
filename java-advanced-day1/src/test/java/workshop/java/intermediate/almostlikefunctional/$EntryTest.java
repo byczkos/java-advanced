@@ -6,6 +6,11 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.util.Map;
+import java.util.function.DoubleBinaryOperator;
+import java.util.function.DoubleUnaryOperator;
+import java.util.function.Function;
+
 public class $EntryTest {
 
     // Task 1. make PriceService more Object Oriented
@@ -25,15 +30,35 @@ public class $EntryTest {
 
         public double calculatePrice(long productId) {
             Product product = dao.getById(productId);
-            if ("A".equals(product.getVatPL())) {
-                return product.getPrice() * 1.05;
-            } else if ("B".equals(product.getVatPL())) {
-                return product.getPrice() * 1.08;
-            } else if ("C".equals(product.getVatPL())) {
-                return product.getPrice() * 1.15;
-            } else {
-                return product.getPrice() * 1.23;
-            }
+            Double gross = fun.apply(product);
+            return gross;
+        }
+    }
+
+    static final DoubleBinaryOperator multiply = (price, multiplier) -> price * multiplier;
+
+    static final Map<String, Double> multipliers = Map.of(
+            "A", 1.05,
+            "B", 1.08,
+            "C", 1.15
+    );
+
+    static final DoubleUnaryOperator multipliers(String type) {
+        Double value = multipliers.getOrDefault(type, 1.23);
+        return (double price) -> multiply.applyAsDouble(price, value);
+    }
+
+    static final Function<Product, Double> fun = product -> multipliers(product.getVatPL()).applyAsDouble(product.getPrice());
+
+    @AllArgsConstructor
+    public static class FunctionalPriceService {
+
+        private final ProductDao dao;
+
+        public double calculatePrice(long productId) {
+            Product product = dao.getById(productId);
+            Double gross = fun.apply(product);
+            return gross;
         }
     }
 
