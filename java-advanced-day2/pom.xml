@@ -5,14 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>pl.com.bottega</groupId>
-    <artifactId>java-advanced</artifactId>
+    <artifactId>java-advanced-day2</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
-        <module>java-advanced-day1</module>
-        <module>java-advanced-day2</module>
-        <!--<module>java-advanced-day3</module>-->
+        <module>legacy-refactoring</module>
     </modules>
 
 </project>
